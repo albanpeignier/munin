@@ -96,7 +96,7 @@ module Munin
 
   class Field
 
-    attr_reader :name
+    attr_reader :name, :options
 
     def initialize(name, options = {})
       @name, @options = name.to_s, options
@@ -129,6 +129,10 @@ module Munin
 
         config
       end
+    end
+
+    def ==(other)
+      other and name == other.name and options == other.options
     end
 
   end
