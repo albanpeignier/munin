@@ -7,18 +7,17 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["FIXME full name"]
   s.date = %q{2008-12-09}
-  s.description = %q{FIX (describe your package)}
+  s.description = %q{The munin gem provides a base class to create munin plugins in ruby.}
   s.email = ["alban.peignier@free.fr"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "PostInstall.txt", "README.rdoc"]
   s.files = ["History.txt", "Manifest.txt", "PostInstall.txt", "README.rdoc", "Rakefile", "lib/munin.rb", "script/console", "script/destroy", "script/generate"]
   s.has_rdoc = true
-  s.homepage = %q{FIX (url)}
-  s.post_install_message = %q{PostInstall.txt}
+  s.homepage = %q{http://github.com/albanpeignier/munin/}
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{munin}
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{FIX (describe your package)}
+  s.summary = %q{The munin gem provides a base class to create munin plugins in ruby.}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
