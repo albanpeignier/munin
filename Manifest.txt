@@ -1,9 +1,0 @@
-History.txt
-Manifest.txt
-PostInstall.txt
-README.rdoc
-Rakefile
-lib/munin.rb
-script/console
-script/destroy
-script/generate

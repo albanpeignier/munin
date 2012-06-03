@@ -1,28 +1,81 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
-module Munin
-  VERSION = '0.0.1'
+include 'munin/version'
 
+module Munin
+
+  # Base class to create Munin plugin
+  #
+  #   class ActiveRecordSessionPlugin << Munin::Plugin
+  #     graph_attributes "Rails Sessions", 
+  #       :category => 'Application',
+  #       :info => 'This graph shows the rails application session count'
+  #
+  #     declare_field :count, :label => 'session count', :min => 0
+  #
+  #     def retrieve_values
+  #       count = ...
+  #       { :count => count }
+  #     end
+  #   end
+  #   
+  #   ActiveRecordSessionPlugin.run
   class Plugin
 
     class << self
 
       @@fields = []
 
+      # Sets the graph attributes of the plugin
+      #
+      # ==== Attributes
+      # * +title+: - The title of the graph, defaults to the plugin's name (munin global attribute graph_title)
+      # * +options+: - Other graph attributes for the plugin (munin global attribute graph_*)
+      # 
+      # ==== Examples
+      #
+      #   # Set classic graph attributes
+      #   graph_attributes "Fetchmail bytes throughput", 
+      #     :category => 'Mail',
+      #     :info => 'This graph shows the volume of mails retrieved by fetchmail'
       def graph_attributes(title, options = {})
         @@graph_options = { :title => title, :args => '--base 1000' }.merge(options)
       end
 
+      # Declare a data source / field of the plugin
+      #
+      # ==== Attributes
+      # * +name+: - The field name
+      # * +options+: - The field attributes
+      # 
+      # ==== Examples
+      #
+      #   # Set a derive field
+      #     declare_field :volume, :label => 'throughput', :type => :derive, :min => 0
       def declare_field(name, options = {})
         @@fields << Field.new(name, options)
       end
 
+      # An elegant way to share common options
+      #
+      # ==== Attributes
+      # * +options+: - The common options
+      # 
+      # ==== Examples
+      #
+      #   # Share field attributes
+      #   with :type => :derive, :min => 0 do
+      #     declare_field :input, :label => "download"
+      #     declare_field :output, :label => "upload"
+      #   end
       def with_options(options)
         yield OptionMerger.new(self, options)
       end
 
     end
+
+    attr_reader :fields
 
     def initialize(config = {})
       @config = config.symbolize_keys
@@ -31,9 +84,12 @@ module Munin
         @config.merge!(self.class.config_from_filename.symbolize_keys)
       end
 
+      @fields = @@fields.dup
+
       after_initialize if respond_to?(:after_initialize)
     end
 
+    # Prints plugin configuration by using the munin format
     def print_config
       output 'host_name', hostname unless hostname.nil?
 
@@ -47,12 +103,19 @@ module Munin
       end
     end
 
+    # Prints plugin values by using the munin format
     def print_values
       retrieve_values.each_pair do |name, value|
         output "#{name}.value", value
       end
     end
 
+    # Create and executes the plugin
+    def self.run
+      self.new.run
+    end
+
+    # Executes the plugin
     def run
       case ARGV.first
         when "config"
@@ -62,8 +125,8 @@ module Munin
       end
     end
 
-    def fields
-      @@fields
+    def declare_field(name, options = {})
+      @fields << Field.new(name, options)
     end
 
     protected

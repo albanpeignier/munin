@@ -50,7 +50,7 @@ The munin gem provides a base class to create munin plugins in ruby.
 
 (The MIT License)
 
-Copyright (c) 2008 FIXME Alban Peignier
+Copyright (c) 2008 Alban Peignier
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
